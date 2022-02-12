@@ -12,14 +12,17 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxTween;
-import sys.FileSystem;
 import lime.utils.Assets;
+#if MODS_ALLOWED
+import sys.FileSystem;
+import sys.io.File;
+#end
 
 using StringTools;
 
 class CreditsState extends MusicBeatState
 {
-	var curSelected:Int = 1;
+	var curSelected:Int = -1;
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var iconArray:Array<AttachedSprite> = [];
@@ -74,7 +77,6 @@ class CreditsState extends MusicBeatState
 		['PolybiusProxy',		'polybiusproxy',	'.MP4 Video Loader Extension',						'https://twitter.com/polybiusproxy',	'0xFFE01F32'],
 		['gedehari',			'gedehari',			'Chart Editor\'s Sound Waveform base',				'https://twitter.com/gedehari',			'0xFFFF9300'],
 		['Keoiki',				'keoiki',			'Note Splash Animations',							'https://twitter.com/Keoiki_',			'0xFFFFFFFF'],
-		['SandPlanet',			'sandplanet',		'Mascot\'s Owner\nMain Supporter of the Engine',		'https://twitter.com/SandPlanetNG',	'0xFFD10616'],
 		['bubba',				'bubba',		'Guest Composer for "Hot Dilf"',	'https://www.youtube.com/channel/UCxQTnLmv0OAS63yzk9pVfaw',	'0xFF61536A'],
 		[''],
 		["Funkin' Crew"],
@@ -95,6 +97,7 @@ class CreditsState extends MusicBeatState
 			var optionText:Alphabet = new Alphabet(0, 70 * i, creditsStuff[i][0], !isSelectable, false);
 			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
+			optionText.yAdd -= 70;
 			if(isSelectable) {
 				optionText.x -= 70;
 			}
@@ -104,6 +107,10 @@ class CreditsState extends MusicBeatState
 			grpOptions.add(optionText);
 
 			if(isSelectable) {
+				if(creditsStuff[i][5] != null) {
+					Paths.currentModDirectory = creditsStuff[i][5];
+				}
+				
 				var icon:AttachedSprite = new AttachedSprite('credits/' + creditsStuff[i][1]);
 				icon.xAdd = optionText.width + 10;
 				icon.sprTracker = optionText;
@@ -111,6 +118,9 @@ class CreditsState extends MusicBeatState
 				// using a FlxGroup is too much fuss!
 				iconArray.push(icon);
 				add(icon);
+				Paths.currentModDirectory = '';
+
+				if(curSelected == -1) curSelected = i;
 			}
 		}
 
@@ -120,7 +130,7 @@ class CreditsState extends MusicBeatState
 		descText.borderSize = 2.4;
 		add(descText);
 
-		bg.color = Std.parseInt(creditsStuff[curSelected][4]);
+		bg.color = getCurrentBGColor();
 		intendedColor = bg.color;
 		changeSelection();
 		super.create();
@@ -170,7 +180,7 @@ class CreditsState extends MusicBeatState
 				curSelected = 0;
 		} while(unselectableCheck(curSelected));
 
-		var newColor:Int =  Std.parseInt(creditsStuff[curSelected][4]);
+		var newColor:Int = getCurrentBGColor();
 		if(newColor != intendedColor) {
 			if(colorTween != null) {
 				colorTween.cancel();
@@ -198,6 +208,14 @@ class CreditsState extends MusicBeatState
 			}
 		}
 		descText.text = creditsStuff[curSelected][2];
+	}
+
+	function getCurrentBGColor() {
+		var bgColor:String = creditsStuff[curSelected][4];
+		if(!bgColor.startsWith('0x')) {
+			bgColor = '0xFF' + bgColor;
+		}
+		return Std.parseInt(bgColor);
 	}
 
 	private function unselectableCheck(num:Int):Bool {

@@ -1,0 +1,18 @@
+{
+	"position": [
+		0,
+		0
+	],
+	"dialogue_pos": "center",
+	"scale": 1,
+	"image": "Nothing",
+	"animations": [
+		{
+			"idle_offsets": [],
+			"loop_offsets": [],
+			"anim": "talk",
+			"idle_name": "Nothing",
+			"loop_name": "Nothing"
+		}
+	]
+}

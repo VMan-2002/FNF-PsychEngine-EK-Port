@@ -664,15 +664,14 @@ class DialogueCharacterEditorState extends MusicBeatState
 
 		#if sys
 		var fullPath:String = null;
-		var jsonLoaded = cast Json.parse(Json.stringify(_file)); //Exploit(???) for accessing a private variable
-		if(jsonLoaded.__path != null) fullPath = jsonLoaded.__path; //I'm either a genious or dangerously dumb
+		@:privateAccess
+		if(_file.__path != null) fullPath = _file.__path;
 
 		if(fullPath != null) {
 			var rawJson:String = File.getContent(fullPath);
 			if(rawJson != null) {
 				var loadedChar:DialogueCharacterFile = cast Json.parse(rawJson);
-				if(loadedChar.dialogue_pos != null) //Make sure it's really a dialogue character
-				{
+				if(loadedChar.dialogue_pos != null) { //Make sure it's really a dialogue character
 					var cutName:String = _file.name.substr(0, _file.name.length - 5);
 					trace("Successfully loaded file: " + cutName);
 					character.jsonFile = loadedChar;

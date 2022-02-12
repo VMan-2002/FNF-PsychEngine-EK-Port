@@ -10,10 +10,9 @@ class HealthIcon extends FlxSprite
 	public var sprTracker:FlxSprite;
 	private var isOldIcon:Bool = false;
 	private var isPlayer:Bool = false;
-	private var char:String = '';
+	public var char:String = '';
 
-	public function new(char:String = 'bf', isPlayer:Bool = false)
-	{
+	public function new(char:String = 'bf', isPlayer:Bool = false) {
 		super();
 		isOldIcon = (char == 'bf-old');
 		this.isPlayer = isPlayer;
@@ -21,8 +20,7 @@ class HealthIcon extends FlxSprite
 		scrollFactor.set();
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (sprTracker != null)
@@ -34,6 +32,7 @@ class HealthIcon extends FlxSprite
 		else changeIcon('bf');
 	}
 
+	private var iconOffsets:Array<Float> = [0, 0];
 	public function changeIcon(char:String) {
 		if(this.char != char) {
 			var name:String = 'icons/' + char;
@@ -41,8 +40,29 @@ class HealthIcon extends FlxSprite
 			if(!Paths.fileExists('images/' + name + '.png', IMAGE)) name = 'icons/icon-face'; //Prevents crash from missing icon
 			var file:Dynamic = Paths.image(name);
 
-			loadGraphic(file, true, 150, 150);
-			animation.add(char, [0, 1], 0, false, isPlayer);
+			loadGraphic(file);
+			var ratio:Float = width / height; //lol
+			//trace('ratio for $char is $ratio');
+			if (ratio > 2.5) {
+				//theres a winning icon
+				loadGraphic(file, true, Math.floor(width / 3), Math.floor(height));
+				animation.add(char, [0, 1, 2], 0, false, isPlayer);
+				//trace(char+" has win icon");
+			} else if (ratio < 1.5) {
+				//theres no losing icon
+				loadGraphic(file, true, Math.floor(width), Math.floor(height));
+				animation.add(char, [0, 0, 0], 0, false, isPlayer);
+				//trace(char+" has single icon");
+			} else {
+				//there is 2 icon
+				loadGraphic(file, true, Math.floor(width / 2), Math.floor(height));
+				animation.add(char, [0, 1, 0], 0, false, isPlayer);
+				//trace(char+" has normal icon");
+			}
+			iconOffsets[0] = (width - 150) / 2;
+			iconOffsets[1] = (width - 150) / 2;
+			updateHitbox();
+			
 			animation.play(char);
 			this.char = char;
 
@@ -51,6 +71,13 @@ class HealthIcon extends FlxSprite
 				antialiasing = false;
 			}
 		}
+	}
+
+	override function updateHitbox()
+	{
+		super.updateHitbox();
+		offset.x = iconOffsets[0];
+		offset.y = iconOffsets[1];
 	}
 
 	public function getCharacter():String {

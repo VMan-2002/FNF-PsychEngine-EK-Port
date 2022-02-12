@@ -129,6 +129,10 @@
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->
+	
+	<!-- <haxelib name="rtmidi-wrapper" if="desktop"/> -->
+	
+	<haxelib name="hxcpp-debugger" if="debug"/> <!-- how to use it: https://github.com/HaxeFoundation/hxcpp-debugger/wiki/Getting-started -->
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

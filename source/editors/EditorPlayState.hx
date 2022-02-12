@@ -196,11 +196,11 @@ class EditorPlayState extends MusicBeatState
 				if(songNotes[1] > -1) { //Real notes
 					var daStrumTime:Float = songNotes[0];
 					if(daStrumTime >= startPos) {
-						var daNoteData:Int = Std.int(songNotes[1] % Note.keyAmmo[mania]);
+						var daNoteData:Int = Std.int(songNotes[1] % PlayState.CurManiaInfo.keys);
 
 						var gottaHitNote:Bool = section.mustHitSection;
 
-						if (songNotes[1] >= Note.keyAmmo[mania])
+						if (songNotes[1] >= PlayState.CurManiaInfo.keys)
 						{
 							gottaHitNote = !section.mustHitSection;
 						}
@@ -822,7 +822,7 @@ class EditorPlayState extends MusicBeatState
 
 	private function generateStaticArrows(player:Int):Void
 	{
-		for (i in 0...Note.keyAmmo[mania])
+		for (i in 0...PlayState.CurManiaInfo.keys)
 		{
 			// FlxG.log.add(i);
 			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X, strumLine.y, i, player);

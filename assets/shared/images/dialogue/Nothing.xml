@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Nothing.png">
+	<!-- No need for Adobe Animate. Lmao -->
+	<!-- This was made with VMan_2002's own converter -->
+	<SubTexture name="Nothing0000" x="0" y="0" width="1" height="1" frameX="-1" frameY="-1" frameWidth="1" frameHeight="1"/>
+</TextureAtlas>
